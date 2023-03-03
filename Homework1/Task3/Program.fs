@@ -6,7 +6,7 @@
 
     reverseList list []
 
-let l = [ 1; 2; 3; 4; 5 ]
+let l = [ 1..5 ]
 printfn $"%A{l}"
 let lr = reverseList l
 printfn $"%A{lr}"
