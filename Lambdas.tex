@@ -1,0 +1,59 @@
+\documentclass[12pt, a4paper, oneside]{memoir}
+\input{preamble.tex}
+
+\title{Домашняя работа по лямбда-исчислению}
+\author{Пономарев Николай}
+
+
+\begin{document}
+
+\maketitle
+
+\setcounter{chapter}{1}
+
+\section{Нормализация}
+
+Привести к нормальной форме
+\[((λa.(λb.b\ b)\ (λb.b\ b))\ b)\ ((λc.(c\ b))\ (λa.a)).\]
+Применим нормальную стратегию:
+\begin{align*}
+                & ((λa.(λb.b\ b)\ (λb.b\ b))\ b)\ ((λc.(c\ b))\ (λa.a))           \\
+    \to_\beta{} & (λa.(λb.b\ b)\ (λb.b\ b))[a \coloneq b] \ ((λc.(c\ b))\ (λa.a)) \\
+    ={}         & ((λb.b\ b)\ (λb.b\ b))\ ((λc.(c\ b))\ (λa.a))                   \\
+    \to_\beta{} & (λb.b\ b)[b \coloneq (λb.b\ b)]\ ((λc.(c\ b))\ (λa.a))          \\
+    ={}         & ((λb.b\ b)\ (λb.b\ b))\ ((λc.(c\ b))\ (λa.a))
+\end{align*}
+Нормальная стратегия не приводит к сокращению терма, значит нормальной формы нет.
+Тем не менее терм можно еще редуцировать:
+\begin{align*}
+                & ((λb.b\ b)\ (λb.b\ b))\ ((λc.(c\ b))\ (λa.a))            \\
+    \to_\beta{} & ((λb.b\ b)\ (λb.b\ b))\ ((λc.(c\ b))[c \coloneq (λa.a)]) \\
+    ={}         & ((λb.b\ b)\ (λb.b\ b))\ ((λa.a)\ b)                      \\
+    \to_\beta{} & ((λb.b\ b)\ (λb.b\ b))\ (λa.a)[a \coloneq b]             \\
+    ={}         & ((λb.b\ b)\ (λb.b\ b))\ b                                \\
+    \equiv{}    & (\omega\ \omega)\ b                                      \\
+    \equiv{}    & \Omega\ b
+\end{align*}
+Больше редукций провести невозможно.
+
+\section[S K K][$S\ K\ K$]{$S\ K\ K$}
+Доказать, что $S\ K\ K = I$.
+\begin{align*}
+                 & S\ K\ K                                                                            \\
+    \equiv{}     & (\lambda x\ y\ z.x\ z\ (y\ z))\ (\lambda x\ y.x) \ (\lambda x\ y.x)                \\
+    \to_\alpha{} & (\lambda x\ y\ z.x\ z\ (y\ z))\ (\lambda x\ y.x) [x \coloneq u] \ (\lambda x\ y.x) \\
+    ={}          & (\lambda x\ y\ z.x\ z\ (y\ z))\ (\lambda u\ y.u)\ (\lambda x\ y.x)                 \\
+    \to_\alpha{} & (\lambda x\ y\ z.x\ z\ (y\ z))\ (\lambda u\ y.u)\ (\lambda x\ y.x) [x \coloneq v]  \\
+    ={}          & (\lambda x\ y\ z.x\ z\ (y\ z))\ (\lambda u\ y.u)\ (\lambda v\ y.v)                 \\
+    \to_\beta{}  & (\lambda x\ y\ z.x\ z\ (y\ z)) [x \coloneq (\lambda u\ y.u)]\ (\lambda v\ y.v)     \\
+    ={}          & (\lambda y\ z.(\lambda u\ y.u)\ z\ (y\ z))\ (\lambda v\ y.v)                       \\
+    \to_\beta{}  & (\lambda y\ z.(\lambda u\ y.u)\ z\ (y\ z))[y \coloneq (\lambda v\ y.v)]            \\
+    ={}          & \lambda z.(\lambda u\ y.u)\ z\ ((\lambda v\ y.v)\ z)                               \\
+    \to_\beta{}  & \lambda z.(\lambda u\ y.u)[u \coloneq z]\ ((\lambda v\ y.v)\ z)                    \\
+    ={}          & \lambda z.(\lambda y.z)\ ((\lambda v\ y.v)\ z)                                     \\
+    \to_\beta{}  & \lambda z.(\lambda y.z)[y \coloneq ((\lambda v\ y.v)\ z)]                          \\
+    ={}          & \lambda z.z                                                                        \\
+    \equiv{}     & I
+\end{align*}
+
+\end{document}
