@@ -13,4 +13,4 @@ let genNextPrime state =
         findNext (state.Head + 2I)
 
 let primeGenerator =
-    [  2I ] |> Seq.unfold (fun state -> Some(state.Head, genNextPrime state))
+    [ 2I ] |> Seq.unfold (fun state -> Some(state.Head, genNextPrime state))

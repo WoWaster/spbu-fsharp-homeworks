@@ -8,7 +8,7 @@ let treeMap mapping tree =
     let rec innerMap tree continuation =
         match tree with
         | Empty -> continuation Empty
-        | Node (value, leftTree, rightTree) ->
+        | Node(value, leftTree, rightTree) ->
             innerMap leftTree (fun leftTree ->
                 innerMap rightTree (fun rightTree -> continuation (Node(mapping value, leftTree, rightTree))))
 
