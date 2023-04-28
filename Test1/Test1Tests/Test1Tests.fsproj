@@ -10,6 +10,7 @@
     <ItemGroup>
         <Compile Include="Supermap.fs"/>
         <Compile Include="RhombusGenerator.fs"/>
+        <Compile Include="Workflow.fs"/>
         <Compile Include="Program.fs"/>
     </ItemGroup>
 
