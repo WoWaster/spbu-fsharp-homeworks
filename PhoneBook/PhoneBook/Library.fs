@@ -16,14 +16,10 @@ module Util =
         |> Seq.iter (fun record -> printfn "%s: %s" record.name record.phone)
 
     let findByName records name =
-        records
-        |> Seq.tryFind (function
-            | record -> record.name = name)
+        records |> Seq.tryFind (fun record -> record.name = name)
 
     let findByPhone records phone =
-        records
-        |> Seq.tryFind (function
-            | record -> record.phone = phone)
+        records |> Seq.tryFind (fun record -> record.phone = phone)
 
     let saveToFile records path =
         let json = JsonSerializer.Serialize(records)
@@ -35,4 +31,4 @@ module Util =
         | true ->
             let json = File.ReadAllText(path)
             let records = JsonSerializer.Deserialize<PhoneRecord list>(json)
-            Some(records)
+            Some records

@@ -24,14 +24,24 @@ let rec getInput records =
 
 and parse args records =
     function
-    | ("exit" | "quit" | "e" | "q") -> run Exit records
-    | ("help" | "h") -> run Help records
-    | ("add" | "a") -> takeTwoArgs Add records args
-    | ("findByName" | "fbn") -> takeOneArg FindByName records args
-    | ("findByPhone" | "fbp") -> takeOneArg FindByPhone records args
-    | ("print" | "p") -> run Print records
-    | ("save" | "s") -> takeOneArg Save records args
-    | ("load" | "l") -> takeOneArg Load records args
+    | "exit"
+    | "quit"
+    | "e"
+    | "q" -> run Exit records
+    | "help"
+    | "h" -> run Help records
+    | "add"
+    | "a" -> takeTwoArgs Add records args
+    | "findByName"
+    | "fbn" -> takeOneArg FindByName records args
+    | "findByPhone"
+    | "fbp" -> takeOneArg FindByPhone records args
+    | "print"
+    | "p" -> run Print records
+    | "save"
+    | "s" -> takeOneArg Save records args
+    | "load"
+    | "l" -> takeOneArg Load records args
     | _ -> printfn "Unknown command"
 
 and takeOneArg command records =
