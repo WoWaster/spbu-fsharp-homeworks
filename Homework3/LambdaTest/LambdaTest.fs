@@ -20,22 +20,22 @@ let bigOmega name = App(omega name, omega name)
 [<Test>]
 let ``S K K = I`` () =
     Lambda.eval (App(App(s "x" "y" "z", k "x" "y"), k "x" "y"))
-    |> should equal (i "z")
+    |> should equal ((i "z"), true)
 
 [<Test>]
 let ``Ω doesn't have normal form`` () =
-    Lambda.eval (bigOmega "x") |> should equal (bigOmega "x")
+    Lambda.eval (bigOmega "x") |> should equal ((bigOmega "x"), false)
 
 let toRename = App(Abs("x", Abs("y", App(Var("x"), Var("y")))), Var "y")
 
 [<Test>]
 let ``Variable rename does occur`` () =
-    Lambda.eval toRename |> should equal (Abs("'y", App(Var "y", Var "'y")))
+    Lambda.eval toRename |> should equal ((Abs("'y", App(Var "y", Var "'y"))), true)
 
 [<Test>]
 let ``K I = K_*`` () =
-    Lambda.eval (App(k "x" "y", i "x")) |> should equal (kStar "y" "x")
+    Lambda.eval (App(k "x" "y", i "x")) |> should equal ((kStar "y" "x"), true)
 
 [<Test>]
 let ``ω I = I`` () =
-    Lambda.eval (App(omega "s", i "x")) |> should equal (i "x")
+    Lambda.eval (App(omega "s", i "x")) |> should equal ((i "x"), true)

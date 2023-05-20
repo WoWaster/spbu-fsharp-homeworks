@@ -41,21 +41,23 @@ module Lambda =
 
         helper term
 
+    /// Return pair of type Term * bool, where Term is the result of the reduction
+    /// and bool indicates whether result is in normal form or not
     let eval term =
         let rec helper term seenTerms =
             match Set.contains term seenTerms with
-            | true -> term
+            | true -> (term, false)
             | false ->
                 match term with
-                | Var _ -> term
-                | Abs(name, innerTerm) -> Abs(name, helper innerTerm (seenTerms.Add(term)))
+                | Var _ -> (term, true)
+                | Abs(name, innerTerm) -> (Abs(name, fst (helper innerTerm (seenTerms.Add(term)))), true)
                 | App(Abs(name, innerTerm), rightTerm) ->
                     let newTerm =
                         substituteTerm (renameVars innerTerm (getFreeVars rightTerm)) name rightTerm
 
                     helper newTerm (seenTerms.Add(term))
                 | App(App _ as leftTerm, rightTerm) ->
-                    helper (App(helper leftTerm (seenTerms.Add(term)), rightTerm)) (seenTerms.Add(term))
-                | App(leftTerm, rightTerm) -> App(leftTerm, helper rightTerm (seenTerms.Add(term)))
+                    helper (App(fst (helper leftTerm (seenTerms.Add(term))), rightTerm)) (seenTerms.Add(term))
+                | App(leftTerm, rightTerm) -> (App(leftTerm, fst (helper rightTerm (seenTerms.Add(term)))), true)
 
         helper term Set.empty
