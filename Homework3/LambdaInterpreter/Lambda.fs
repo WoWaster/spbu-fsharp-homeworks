@@ -6,22 +6,16 @@ type Term =
     | App of Term * Term
 
 module Lambda =
-    let getFreeVars term =
-        let rec helper term =
-            match term with
-            | Var name -> Set.empty.Add(name)
-            | Abs (name, innerTerm) -> (helper innerTerm).Remove(name)
-            | App (leftTerm, rightTerm) -> Set.union (helper leftTerm) (helper rightTerm)
+    let rec getFreeVars term =
+        match term with
+        | Var name -> Set.singleton(name)
+        | Abs (name, innerTerm) -> (getFreeVars innerTerm).Remove(name)
+        | App (leftTerm, rightTerm) -> Set.union (getFreeVars leftTerm) (getFreeVars rightTerm)
 
-        helper term
-
-    let getFreshVar varName vars =
-        let rec helper varName =
-            match Set.contains varName vars with
-            | true -> helper ("'" + varName)
-            | false -> varName
-
-        helper varName
+    let rec getFreshVar varName vars =
+        match Set.contains varName vars with
+        | true -> getFreshVar ("'" + varName) vars
+        | false -> varName
 
     let substituteTerm term varName subTerm =
         let rec helper term =
