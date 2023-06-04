@@ -1,0 +1,77 @@
+\documentclass[12pt, a4paper, oneside]{memoir}
+\input{preamble.tex}
+\usepackage[altpo, epsilon]{backnaur}
+
+\title{Грамматика лямбда-выражений}
+\author{Пономарев Николай}
+
+\begin{document}
+
+\maketitle
+
+\begin{bnf*}
+    \bnfprod{line}{\bnfts{let } \bnfpn{identifier} \bnfts{ = } \bnfpn{term} \bnfts{ \textbackslash n}} \\
+    \bnfmore{\bnfor \bnfpn{term} \bnfts{ \textbackslash n}} \\
+    \bnfprod{term}{\bnfpn{term'} \bnfor \bnfpn{abs} \bnfor \bnfpn{app}} \\
+    \bnfprod{abs}{\bnfpn{lambda} \bnfpn{identifiers} \bnfts{.} \bnfpn{term}} \\
+    \bnfprod{app}{\bnfpn{term'} \bnfpn{term'} \bnfor \bnfpn{term'} \bnfpn{app}} \\
+    \bnfprod{term'}{\bnfpn{identifier} \bnfor \bnfts{(} \bnfpn{term} \bnfts{)}} \\
+    \bnfprod{identifiers}{\bnfpn{identifier} \bnfor \bnfpn{identifier} \bnfpn{identifiers}} \\
+    \bnfprod{identifier}{\bnfpn{letter} \bnfpn{identifier-tail}} \\
+    \bnfprod{identifier-tail}{\bnfpn{letter-or-digit} \bnfpn{identifier-tail} \bnfor \bnfes} \\
+    \bnfprod{letter-or-digit}{\bnfpn{letter} \bnfor \bnfpn{digit}} \\
+    \bnfprod{letter}{\bnfts{a} \bnfor \bnfts{b} \bnfor \bnfsk \bnfor \bnfts{z} \bnfor \bnfts{A} \bnfor \bnfts{B} \bnfor \bnfsk \bnfor \bnfts{Z}}\\
+    \bnfprod{digit}{\bnfts{0} \bnfor \bnfts{1} \bnfor \bnfsk \bnfor \bnfts{9}} \\
+    \bnfprod{lambda}{\bnfts{$\lambda$} \bnfor \bnfts{\textbackslash}}
+\end{bnf*}
+
+Вывод в данной грамматике для \texttt{let S = $\lambda$x y z.x z (y z)\textbackslash n}:
+\begin{align*}
+               & \langle \text{line} \rangle                                                                                                                 \\
+    \implies{} & \text{let } \langle \text{identifier} \rangle = \langle \text{term} \rangle \text{\textbackslash n}                                         \\
+    \implies{} & \text{let } \langle \text{letter} \rangle \langle \text{identifier-tail} \rangle = \langle \text{term} \rangle \text{\textbackslash n}      \\
+    \implies{} & \text{let } \text{S} \langle \text{identifier-tail} \rangle = \langle \text{term} \rangle \text{\textbackslash n}                           \\
+    \implies{} & \text{let } \text{S} = \langle \text{term} \rangle \text{\textbackslash n}                                                                  \\
+    \implies{} & \text{let } \text{S} = \langle \text{abs} \rangle \text{\textbackslash n}                                                                   \\
+    \implies{} & \text{let } \text{S} = \langle \text{lambda} \rangle \langle \text{identifiers} \rangle.\langle \text{term} \rangle \text{\textbackslash n}
+\end{align*}
+\begin{align*}
+    \implies{} & \text{let } \text{S} = \lambda \langle \text{identifiers} \rangle.\langle \text{term} \rangle \text{\textbackslash n}                                                                         \\
+    \implies{} & \text{let } \text{S} = \lambda \langle \text{identifier} \rangle \langle \text{identifiers} \rangle.\langle \text{term} \rangle \text{\textbackslash n}                                       \\
+    \implies{} & \text{let } \text{S} = \lambda \langle \text{letter} \rangle \langle \text{identifier-tail} \rangle \langle \text{identifiers} \rangle.\langle \text{term} \rangle \text{\textbackslash n}    \\
+    \implies{} & \text{let } \text{S} = \lambda x\ \langle \text{identifier-tail} \rangle \langle \text{identifiers} \rangle.\langle \text{term} \rangle \text{\textbackslash n}                               \\
+    \implies{} & \text{let } \text{S} = \lambda x\ \langle \text{identifiers} \rangle.\langle \text{term} \rangle \text{\textbackslash n}                                                                      \\
+    \implies{} & \text{let } \text{S} = \lambda x\ \langle \text{identifier} \rangle \langle \text{identifiers} \rangle.\langle \text{term} \rangle \text{\textbackslash n}                                    \\
+    \implies{} & \text{let } \text{S} = \lambda x\ \langle \text{letter} \rangle \langle \text{identifier-tail} \rangle \langle \text{identifiers} \rangle.\langle \text{term} \rangle \text{\textbackslash n} \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ \langle \text{identifier-tail} \rangle \langle \text{identifiers} \rangle.\langle \text{term} \rangle \text{\textbackslash n}                            \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ \langle \text{identifiers} \rangle.\langle \text{term} \rangle \text{\textbackslash n}                                                                   \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ \langle \text{identifier} \rangle.\langle \text{term} \rangle \text{\textbackslash n}                                                                    \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ \langle \text{letter} \rangle \langle \text{identifier-tail} \rangle.\langle \text{term} \rangle \text{\textbackslash n}                                 \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z \langle \text{identifier-tail} \rangle.\langle \text{term} \rangle \text{\textbackslash n}                                                             \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.\langle \text{term} \rangle \text{\textbackslash n}                                                                                                    \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.\langle \text{app} \rangle \text{\textbackslash n}                                                                                                     \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.\langle \text{term'} \rangle \langle \text{app} \rangle\text{\textbackslash n}                                                                         \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.\langle \text{identifier} \rangle \langle \text{app} \rangle\text{\textbackslash n}                                                                    \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.\langle \text{letter} \rangle \langle \text{identifier-tail} \rangle \langle \text{app} \rangle\text{\textbackslash n}                                 \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x \langle \text{identifier-tail} \rangle \langle \text{app} \rangle\text{\textbackslash n}                                                             \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x \langle \text{app} \rangle\text{\textbackslash n}                                                                                                    \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x \langle \text{term'} \rangle \langle \text{term'} \rangle \text{\textbackslash n}                                                                    \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x \langle \text{identifier} \rangle \langle \text{term'} \rangle \text{\textbackslash n}                                                               \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x \langle \text{letter} \rangle \langle \text{identifier-tail} \rangle \langle \text{term'} \rangle \text{\textbackslash n}                            \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x\ z \langle \text{identifier-tail} \rangle \langle \text{term'} \rangle \text{\textbackslash n}                                                       \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x\ z \langle \text{term'} \rangle \text{\textbackslash n}                                                                                              \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x\ z (\langle \text{term} \rangle) \text{\textbackslash n}                                                                                             \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x\ z (\langle \text{app} \rangle) \text{\textbackslash n}                                                                                              \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x\ z (\langle \text{term'} \rangle \langle \text{term'} \rangle) \text{\textbackslash n}                                                               \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x\ z (\langle \text{identifier} \rangle \langle \text{term'} \rangle) \text{\textbackslash n}                                                          \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x\ z (\langle \text{letter} \rangle \langle \text{identifier-tail} \rangle \langle \text{term'} \rangle) \text{\textbackslash n}                       \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x\ z (y \langle \text{identifier-tail} \rangle \langle \text{term'} \rangle) \text{\textbackslash n}                                                   \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x\ z (y \langle \text{term'} \rangle) \text{\textbackslash n}                                                                                          \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x\ z (y \langle \text{identifier} \rangle) \text{\textbackslash n}                                                                                     \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x\ z (y \langle \text{letter} \rangle \langle \text{identifier-tail} \rangle) \text{\textbackslash n}                                                  \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x\ z (y\ z \langle \text{identifier-tail} \rangle) \text{\textbackslash n}                                                                             \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x\ z (y\ z \langle \text{identifier-tail} \rangle) \text{\textbackslash n}                                                                             \\
+    \implies{} & \text{let } \text{S} = \lambda x\ y\ z.x\ z (y\ z) \text{\textbackslash n}                                                                                                                    \\
+\end{align*}
+
+\end{document}
